@@ -1,6 +1,7 @@
+"use client";
 import "./globals.css";
-import {AntdRegistry} from "@ant-design/nextjs-registry";
-import React from "react";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import React, { useCallback, useEffect } from "react";
 import BasicLayout from "@/layouts/BasicLayout";
 /*
 //国际化
@@ -13,6 +14,22 @@ export const metadata: Metadata = {
 };
 */
 
+//全局初始化逻辑
+const InitLayout: React.FC<
+  Readonly<{
+    children?: React.ReactNode;
+  }>
+> = ({ children }) => {
+  //初始化逻辑
+  const doInit = useCallback(() => {
+    console.log("init");
+  }, []);
+//只调用一次
+  useEffect(() => {
+    doInit();
+  }, []);
+  return children;
+};
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,9 +39,9 @@ export default function RootLayout({
     <html lang="zh">
       <body>
         <AntdRegistry>
-            <BasicLayout>
-                {children}
-            </BasicLayout>
+          <InitLayout>
+            <BasicLayout>{children}</BasicLayout>
+          </InitLayout>
         </AntdRegistry>
       </body>
     </html>
