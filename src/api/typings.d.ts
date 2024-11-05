@@ -566,6 +566,7 @@ declare namespace API {
     userAvatar?: string;
     userName?: string;
     userProfile?: string;
+    userRole?: string;
   };
 
   type View = {

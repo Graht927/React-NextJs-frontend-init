@@ -17,6 +17,8 @@ import GlobalFooter from "@/components/GlobalFooter";
 import './index.css'
 import Image from "next/image";
 import {menus} from "../../../config/menu";
+import {useSelector} from "react-redux";
+import {RootState} from "@/stores";
 const SearchInput = () => {
   const { token } = theme.useToken();
   return (
@@ -51,6 +53,8 @@ interface Props {
 }
 
 export default function BasicLayout({ children }: Props) {
+  const loginUser = useSelector((state: RootState) => state.loginUser);
+  console.log(loginUser)
   const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
     fixSiderbar: true,
     layout: "mix",
@@ -100,9 +104,9 @@ export default function BasicLayout({ children }: Props) {
           pathname,
         }}
         avatarProps={{
-          src: "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
+          src: loginUser.userAvatar || "/assets/logo.jpg",
           size: "small",
-          title: "七妮妮",
+          title: loginUser.userName || "AAAA",
           render: (props, dom) => {
             return (
               <Dropdown
@@ -137,9 +141,6 @@ export default function BasicLayout({ children }: Props) {
               {title}
             </a>
           );
-          if (document.body.clientWidth < 1400) {
-            return defaultDom;
-          }
           if (_.isMobile) return defaultDom;
           return <>{defaultDom}</>;
         }}

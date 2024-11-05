@@ -3,6 +3,10 @@ import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import React, { useCallback, useEffect } from "react";
 import BasicLayout from "@/layouts/BasicLayout";
+import store, {AppDispatch, RootState} from "@/stores";
+import {Provider, useDispatch} from "react-redux";
+import {getLoginUserUsingGet} from "@/api/userController";
+import {setLoginUser} from "@/stores/loginUser";
 /*
 //国际化
 const inter = Inter({ subsets: ["latin"] });
@@ -20,13 +24,23 @@ const InitLayout: React.FC<
     children?: React.ReactNode;
   }>
 > = ({ children }) => {
+  const dispatch = useDispatch<AppDispatch>();
   //初始化逻辑
-  const doInit = useCallback(() => {
-    console.log("init");
+  const doInitLoginUser = useCallback(async () => {
+    const res = await getLoginUserUsingGet();
+    if (res.data) {
+      //更新全局用户状态
+    }else {
+      //报错
+      setTimeout(()=>{
+        const testUser = {userName:"张三",id: 1,}
+        dispatch(setLoginUser(testUser));
+      },3000)
+    }
   }, []);
-//只调用一次
+  //只调用一次
   useEffect(() => {
-    doInit();
+    doInitLoginUser();
   }, []);
   return children;
 };
@@ -39,9 +53,11 @@ export default function RootLayout({
     <html lang="zh">
       <body>
         <AntdRegistry>
-          <InitLayout>
-            <BasicLayout>{children}</BasicLayout>
-          </InitLayout>
+          <Provider store={store}>
+            <InitLayout>
+              <BasicLayout>{children}</BasicLayout>
+            </InitLayout>
+          </Provider>
         </AntdRegistry>
       </body>
     </html>
